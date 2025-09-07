@@ -1,0 +1,63 @@
+name: CI Checks
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+    branches: [ main ]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Install Dependencies
+        run: npm install
+
+      - name: Build Site
+        run: npm run build
+
+      - name: Start Server
+        run: npx http-server ./dist --port 8080 -s -d false &
+
+      - name: Generate URLs for Testing
+        id: get_urls
+        run: |
+          # Extrai URLs do sitemap.xml gerado pelo build e formata como um array JSON
+          URLS=$(cat dist/sitemap.xml | grep -o '<loc>[^<]*</loc>' | sed 's/<loc>//g; s/.*<\/loc>//g' | jq -R -s 'split("\n") | map(select(. != ""))')
+          echo "URLS_JSON=$URLS" >> $GITHUB_OUTPUT
+
+      - name: Update Pa11y Config
+        run: |
+          # Adiciona as URLs do sitemap ao arquivo de configuração do Pa11y
+          jq --argjson urls "${{ steps.get_urls.outputs.URLS_JSON }}" '.urls += $urls' .pa11yci.json > .pa11yci.json.tmp && mv .pa11yci.json.tmp .pa11yci.json
+          echo "Pa11y config updated with:"
+          cat .pa11yci.json
+
+      - name: Update Lighthouse Config
+        run: |
+          # Adiciona as URLs do sitemap ao arquivo de configuração do Lighthouse
+          jq --argjson urls "${{ steps.get_urls.outputs.URLS_JSON }}" '.ci.collect.url += $urls' .github/workflows/lighthouserc.json > .lighthouserc.json.tmp && mv .lighthouserc.json.tmp .github/workflows/lighthouserc.json
+          echo "Lighthouse config updated with:"
+          cat .github/workflows/lighthouserc.json
+
+      - name: Run Data and Link Checks
+        run: node ./scripts/validate-data.mjs && node ./scripts/check-links.mjs
+
+      - name: Accessibility (pa11y-ci)
+        run: npx pa11y-ci --config .pa11yci.json
+
+      - name: Lighthouse (local)
+        run: npx lhci autorun --config=.github/workflows/lighthouserc.json

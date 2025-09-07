@@ -1,0 +1,19 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/listas.schema.json",
+  "title": "Manifesto de Listas",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["titulo", "descricao", "arquivo", "mostrar_solucoes"],
+    "properties": {
+      "titulo": { "type": "string", "minLength": 1 },
+      "descricao": { "type": "string", "minLength": 1 },
+      "arquivo": { "type": "string", "pattern": "^.+\\.json$" },
+      "mostrar_solucoes": { "type": "boolean" },
+      "tags": { "type": "array", "items": { "type": "string" } },
+      "releaseDate": { "type": "string", "format": "date" }
+    },
+    "additionalProperties": true
+  }
+}

@@ -1,0 +1,24 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://example.com/schemas/aulas.schema.json",
+  "title": "Manifesto de Aulas",
+  "type": "array",
+  "items": {
+    "type": "object",
+    "required": ["id", "titulo", "descricao", "arquivo", "ativo"],
+    "properties": {
+      "id": { "type": "string", "minLength": 1 },
+      "titulo": { "type": "string", "minLength": 1 },
+      "descricao": { "type": "string", "minLength": 1 },
+      "arquivo": { "type": "string", "pattern": "^.+\\.html$" },
+      "unidade": { "type": "string" },
+      "ativo": { "type": "boolean" },
+      "releaseDate": { "type": "string", "format": "date", "description": "Data de liberação (YYYY-MM-DD)" },
+      "styles": { "type": "array", "items": { "type": "string" } },
+      "scripts": { "type": "array", "items": { "type": "string" } },
+      "init": { "type": ["string", "null"] },
+      "tags": { "type": "array", "items": { "type": "string" } }
+    },
+    "additionalProperties": true
+  }
+}

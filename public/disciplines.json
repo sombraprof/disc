@@ -1,0 +1,32 @@
+[
+  {
+    "id": "algi",
+    "name": "Algoritmos e Programação I",
+    "code": "ALGI",
+    "themeColor": "#3498db"
+  },
+  {
+    "id": "jogos",
+    "name": "Tecnologia e Desenvolvimento de Jogos Digitais",
+    "code": "JOGOS",
+    "themeColor": "#e74c3c"
+  },
+  {
+    "id": "lpoo",
+    "name": "Linguagem de Programação Orientada a Objetos",
+    "code": "LPOO",
+    "themeColor": "#9b59b6"
+  },
+  {
+    "id": "mobile",
+    "name": "Desenvolvimento para Dispositivos Móveis",
+    "code": "MOB",
+    "themeColor": "#f1c40f"
+  },
+  {
+    "id": "tgs",
+    "name": "Teoria Geral dos Sistemas",
+    "code": "TGS",
+    "themeColor": "#2ecc71"
+  }
+]

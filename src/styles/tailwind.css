@@ -1,0 +1,9 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* Ajustes de tipografia e container caso necessário */
+@layer base {
+  html { -webkit-text-size-adjust: 100%; }
+}
+
